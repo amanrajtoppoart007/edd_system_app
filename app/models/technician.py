@@ -1,4 +1,4 @@
-from app.database.db import DB
+from app.db.db import DB
 
 class Technician:
     def __init__(self, name=None, email=None, expertise=None, id=None):

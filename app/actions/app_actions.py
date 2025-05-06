@@ -6,13 +6,13 @@ from models.equipment import Equipment
 from models.job import Job
 from models.administrator import Administrator
 from models.technician import Technician
-from app.database.db import Database
+from app.db.db import DB
 from models.supplier import Supplier
 
 class AppAction:
     def __init__(self):
         self.active_user = None
-        self.data_store = Database()
+        self.data_store = DB()
 
     def start(self):
         while True:

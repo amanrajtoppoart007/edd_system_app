@@ -6,9 +6,9 @@ class DB:
     def __init__(self):
         if DB.connection is None:
             DB.connection = sqlite3.connect("edd_system.db")
-            self.create_tables()
+            self.db_migration()
 
-    def create_tables(self):
+    def db_migration(self):
         cursor = DB.connection.cursor()
         
         # Create customers table

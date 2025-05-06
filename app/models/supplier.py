@@ -1,4 +1,4 @@
-from app.database.db import DB
+from app.db.db import DB
 
 class Supplier:
     def __init__(self, name, part_type, location, id=None):

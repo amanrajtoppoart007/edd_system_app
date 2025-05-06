@@ -1,4 +1,4 @@
-from app.database.db import DB
+from app.db.db import DB
 
 class Equipment:
     def __init__(self, customer_id, type, serial_number, id=None):

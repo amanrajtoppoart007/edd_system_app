@@ -1,4 +1,4 @@
-from app.database.db import DB
+from app.db.db import DB
 
 class Customer:
     def __init__(self, name, email, id=None):

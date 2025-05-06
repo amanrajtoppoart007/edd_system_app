@@ -1,4 +1,4 @@
-from app.database.db import DB
+from app.db.db import DB
 
 class Job:
     def __init__(self, description, status="Job Created", technician_id=None,equipment_id=None, id=None):
