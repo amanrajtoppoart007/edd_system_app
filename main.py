@@ -5,6 +5,5 @@
 from app.actions.app_actions import AppAction
 
 if __name__ == "__main__":
-    print("EDD Technologies Repair System")
-    app = AppAction()
-    app.start()
+    print("E.D.D. Repair System V.1.0.0")
+    (AppAction()).start()
