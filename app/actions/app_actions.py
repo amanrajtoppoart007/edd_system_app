@@ -1,6 +1,6 @@
 import sys
 import unittest
-import os # Import the os module
+import os
 from models.customer import Customer
 from models.equipment import Equipment
 from models.job import Job
@@ -11,293 +11,308 @@ from models.supplier import Supplier
 
 class AppAction:
     def __init__(self):
-        self.current_user = None
-        self.db = Database()
+        self.active_user = None
+        self.data_store = Database()
 
     def start(self):
         while True:
             try:
-                print("\n--- EDD Technologies ---")
-                print("1. Login as Administrator")
-                print("2. Login as Technician")
-                print("3. Login as Customer")
-                print("4. Test Modules")
-                print("5. Exit")
-                choice = input("Choose an option: ")
-                if choice == '1':
-                    name = input("Enter admin name: ")
-                    self.current_user = Administrator(name)
-                    self.admin_menu()
-                elif choice == '2':
-                    email = input("Enter technician email: ")
-                    technician = Technician.find_by_email(email)
+                print("\n--- Tech Solutions Portal ---")
+                options = {
+                    "1": "Admin Login",
+                    "2": "Technician Access",
+                    "3": "Customer Portal",
+                    "4": "Execute Module Tests",
+                    "5": "Exit Application"
+                }
+                for key, value in options.items():
+                    print(f"{key}. {value}")
+
+                selection = input("Select an action: ")
+                if selection == '1':
+                    admin_name = input("Enter administrator username: ")
+                    self.active_user = Administrator(admin_name)
+                    self._admin_operations()
+                elif selection == '2':
+                    tech_email = input("Enter technician email address: ")
+                    technician = Technician.find_by_email(tech_email)
                     if technician:
-                        self.current_user = technician
-                        self.technician_menu()
+                        self.active_user = technician
+                        self._technician_actions()
                     else:
-                        print("Technician not found.")
-                elif choice == '3':
-                    email = input("Enter your email: ")
-                    customer = Customer.find_by_email(email)
+                        print("Technician account not found.")
+                elif selection == '3':
+                    customer_email = input("Enter your registered email: ")
+                    customer = Customer.find_by_email(customer_email)
                     if customer:
-                        self.current_user = customer
-                        self.customer_menu()
+                        self.active_user = customer
+                        self._customer_interactions()
                     else:
-                        print("Customer not found. Please register as walk-in.")
-                elif choice == '4':
-                    self.run_tests()
-                elif choice == '5':
-                    print("Goodbye!")
+                        print("Customer not found. Please proceed as a walk-in.")
+                elif selection == '4':
+                    self._run_module_tests()
+                elif selection == '5':
+                    print("Exiting Tech Solutions Portal. Goodbye!")
                     sys.exit()
                 else:
-                    print("Invalid option.")
+                    print("Invalid selection. Please try again.")
             except KeyboardInterrupt:
-                print("\n[!] Returning to main menu.")
+                print("\n[!] Returning to the main menu.")
 
-    def admin_menu(self):
+    def _admin_operations(self):
         while True:
             try:
-                print("\n--- Admin Menu ---")
-                print("1. Register Walk-in Customer")
-                print("2. List All Jobs")
-                print("3. Allocate Job to Technician")
-                print("4. Add New Technician")
-                print("5. View Assessed Jobs and Add Cost")
-                print("6. Manage Suppliers")
-                print("7. Logout")
-                choice = input("Choose an option: ")
-                if choice == '1':
-                    self.register_walkin_customer()
-                elif choice == '2':
-                    self.list_jobs()
-                elif choice == '3':
-                    self.allocate_job()
-                elif choice == '4':
-                    self.add_technician()
-                elif choice == '5':
-                    self.view_assessed_jobs_and_add_cost()
-                elif choice == '6':
-                    self.manage_suppliers()
-                elif choice == '7':
+                print("\n--- Administrator Console ---")
+                actions = {
+                    "1": "Register New Customer",
+                    "2": "View All Service Requests",
+                    "3": "Assign Request to Technician",
+                    "4": "Add New Technician Account",
+                    "5": "Review Completed Requests & Finalize Cost",
+                    "6": "Manage Parts Suppliers",
+                    "7": "Logout from Admin Console"
+                }
+                for key, value in actions.items():
+                    print(f"{key}. {value}")
+                task = input("Choose an administrative task: ")
+                if task == '1':
+                    self._register_new_customer()
+                elif task == '2':
+                    self._view_all_service_requests()
+                elif task == '3':
+                    self._assign_request_to_technician()
+                elif task == '4':
+                    self._create_technician_account()
+                elif task == '5':
+                    self._review_completed_requests_add_cost()
+                elif task == '6':
+                    self._manage_parts_suppliers()
+                elif task == '7':
                     break
                 else:
-                    print("Invalid choice")
+                    print("Invalid task selection.")
             except KeyboardInterrupt:
-                print("\n[!] Returning to admin menu.")
+                print("\n[!] Returning to administrator console.")
                 break
 
-
-
-    def remove_suppliers(self):
-        ids_input = input("Enter supplier IDs to remove (comma separated): ")
+    def _remove_parts_suppliers(self):
+        supplier_ids_input = input("Enter IDs of suppliers to remove (comma-separated): ")
         try:
-            ids = [int(i.strip()) for i in ids_input.split(",") if i.strip().isdigit()]
-            Supplier.remove_suppliers_by_ids(ids)
-            print("Suppliers removed successfully.")
+            supplier_ids = [int(i.strip()) for i in supplier_ids_input.split(",") if i.strip().isdigit()]
+            Supplier.remove_suppliers_by_ids(supplier_ids)
+            print("Selected suppliers have been removed.")
         except Exception as e:
-            print(f"Error removing suppliers: {e}")
+            print(f"Error encountered while removing suppliers: {e}")
 
-    def manage_suppliers(self):
+    def _manage_parts_suppliers(self):
         try:
-            print("\n--- Manage Suppliers ---")
-            print("1. Add Supplier")
-            print("2. View All Suppliers")
-            print("3. Remove Suppliers")
-            sub_choice = input("Choose an option: ")
+            print("\n--- Parts Supplier Management ---")
+            supplier_options = {
+                "1": "Add New Supplier",
+                "2": "List All Suppliers",
+                "3": "Remove Suppliers"
+            }
+            for key, value in supplier_options.items():
+                print(f"{key}. {value}")
+            supplier_choice = input("Select supplier action: ")
 
-            if sub_choice == '1':
-                name = input("Enter supplier name: ")
-                part_type = input("Enter part type: ")
-                location = input("Enter supplier location: ")
-                supplier = Supplier(name, part_type, location)
-                supplier.save()
-                print("Supplier added successfully.")
-            elif sub_choice == '2':
-                suppliers = Supplier.get_all()
-                if suppliers:
-                    for s in suppliers:
-                        print(f"ID: {s[0]}, Name: {s[1]}, Part Type: {s[2]}, Location: {s[3]}")
+            if supplier_choice == '1':
+                supplier_name = input("Enter supplier's name: ")
+                part_category = input("Enter type of parts supplied: ")
+                supplier_location = input("Enter supplier's location: ")
+                new_supplier = Supplier(supplier_name, part_category, supplier_location)
+                new_supplier.save()
+                print(f"Supplier '{supplier_name}' added successfully.")
+            elif supplier_choice == '2':
+                suppliers_list = Supplier.get_all()
+                if suppliers_list:
+                    for supplier in suppliers_list:
+                        print(f"ID: {supplier[0]}, Name: {supplier[1]}, Parts: {supplier[2]}, Location: {supplier[3]}")
                 else:
-                    print("No suppliers found.")
-            elif sub_choice == '3': 
-                self.remove_suppliers()       
+                    print("No suppliers currently listed.")
+            elif supplier_choice == '3':
+                self._remove_parts_suppliers()
             else:
-                print("Invalid option.")
+                print("Invalid supplier option.")
         except Exception as e:
-            print(f"[!] Error: {e}")
+            print(f"[!] An error occurred: {e}")
 
-
-
-    def add_technician(self):
+    def _create_technician_account(self):
         try:
-            name = input("Enter technician name: ")
-            email = input("Enter technician email: ")
-            expertise = input("Enter technician expertise: ")
-            technician = Technician(name,email, expertise)
-            technician.save()
-            print(f"Technician '{name}' with '{email}' added successfully.")
+            tech_name = input("Enter technician's full name: ")
+            tech_email = input("Enter technician's email address: ")
+            tech_expertise = input("Enter technician's area of expertise: ")
+            new_technician = Technician(tech_name, tech_email, tech_expertise)
+            new_technician.save()
+            print(f"Technician '{tech_name}' with email '{tech_email}' has been added.")
         except Exception as e:
-            print(f"[!] Error adding technician: {e}")
+            print(f"[!] Error creating technician account: {e}")
 
-    def register_walkin_customer(self):
+    def _register_new_customer(self):
         try:
-            name = input("Enter customer name: ")
-            email = input("Enter email: ")
-            equipment_type = input("Enter equipment type: ")
-            serial = input("Enter serial number: ")
+            customer_name = input("Enter customer's name: ")
+            customer_email = input("Enter customer's email: ")
+            equipment_type = input("Enter equipment make/type: ")
+            serial_number = input("Enter equipment serial number: ")
 
-            customer = Customer(name, email)
-            customer_id = customer.save()
-            equipment = Equipment(customer_id, equipment_type, serial)
-            equipment.save()
-            print(f"Customer {name} and equipment details saved.")
+            new_customer = Customer(customer_name, customer_email)
+            customer_id = new_customer.save()
+            new_equipment = Equipment(customer_id, equipment_type, serial_number)
+            new_equipment.save()
+            print(f"Customer '{customer_name}' and equipment details recorded.")
         except Exception as e:
-            print(f"Error while registering customer: {e}")
+            print(f"Error during customer registration: {e}")
 
-    def list_jobs(self):
-        jobs = Job.get_all()
-        for job in jobs:
-            print(f"Job ID: {job[0]}, Customer: {job[6]} , Description: {job[3]}, Status: {job[4]} , Cost: {job[5]}")
+    def _view_all_service_requests(self):
+        all_jobs = Job.get_all()
+        if all_jobs:
+            for job_details in all_jobs:
+                print(f"Request ID: {job_details[0]}, Customer: {job_details[6]}, Issue: {job_details[3]}, Status: {job_details[4]}, Estimated Cost: {job_details[5]}")
+        else:
+            print("No service requests currently in the system.")
 
-
-    def allocate_job(self):
+    def _assign_request_to_technician(self):
         try:
-            equipment_id = input("Enter equipment ID to allocate job: ")
-            technician_id = input("Enter technician ID to allocate job: ")
-            description = input("Enter job description: ")
-            job = Job(description, technician_id=technician_id,equipment_id=equipment_id)
-            job.save()
-            print(f"Job created with ID: {job.id}")
+            device_id = input("Enter Equipment ID for the service request: ")
+            tech_id = input("Enter Technician ID to assign: ")
+            issue_description = input("Enter a brief description of the issue: ")
+            new_job = Job(issue_description, technician_id=tech_id, equipment_id=device_id)
+            new_job.save()
+            print(f"Service request created with ID: {new_job.id}")
         except Exception as e:
-            print(f"Error while allocating job: {e}")
+            print(f"Error assigning service request: {e}")
 
-    def technician_menu(self):
+    def _technician_actions(self):
         while True:
             try:
-                print("\n--- Technician Menu ---")
-                print("1. View My Assigned Jobs")
-                print("2. Mark Jobs as Assessed")
-                print("3. Manage Suppliers")
-                print("4. Logout")
-                choice = input("Choose an option: ")
-                if choice == '1':
-                    self.list_jobs_for_technician()
-                elif choice == '2':
-                    self.change_job_status()
-                elif choice == '3':
-                    self.manage_suppliers()
-                elif choice == '4':
-                    break  
+                print("\n--- Technician Interface ---")
+                tech_options = {
+                    "1": "View My Assigned Service Requests",
+                    "2": "Update Status of Service Request",
+                    "3": "Manage Parts Suppliers",
+                    "4": "Logout from Technician Interface"
+                }
+                for key, value in tech_options.items():
+                    print(f"{key}. {value}")
+                tech_choice = input("Select an action: ")
+                if tech_choice == '1':
+                    self._view_assigned_service_requests()
+                elif tech_choice == '2':
+                    self._update_service_request_status()
+                elif tech_choice == '3':
+                    self._manage_parts_suppliers()
+                elif tech_choice == '4':
+                    break
                 else:
-                    print("Invalid choice")
+                    print("Invalid selection.")
             except KeyboardInterrupt:
-                print("\n[!] Returning to technician menu.")
+                print("\n[!] Returning to technician interface.")
                 break
 
-    def list_jobs_for_technician(self):
+    def _view_assigned_service_requests(self):
         try:
-            technician_id = self.current_user.get_id()
-            jobs = Job.get_by_technician(technician_id)
-            if jobs:
-                for job in jobs:
-                    print(f"\nJob ID: {job[0]}, Description: {job[1]}, Status: {job[2]}")
-                    print(f"  Equipment: {job[3]}, Serial: {job[4]}")
+            technician_identifier = self.active_user.get_id()
+            assigned_jobs = Job.get_by_technician(technician_identifier)
+            if assigned_jobs:
+                for job_info in assigned_jobs:
+                    print(f"\nRequest ID: {job_info[0]}, Issue: {job_info[1]}, Status: {job_info[2]}")
+                    print(f"  Equipment: {job_info[3]}, Serial: {job_info[4]}")
             else:
-                print("No jobs assigned to you.")
+                print("No service requests currently assigned to you.")
         except Exception as e:
-            print(f"Error while listing jobs: {e}")
+            print(f"Error retrieving assigned jobs: {e}")
 
-    def change_job_status(self):
-        ids = input("Enter Job IDs to mark as 'Job Assessed' (comma-separated): ")
+    def _update_service_request_status(self):
+        request_ids = input("Enter Request IDs to mark as 'Assessed' (comma-separated): ")
         try:
-            job_ids = [int(x.strip()) for x in ids.split(",") if x.strip().isdigit()]
-            if Job.update_status_for_technician(job_ids, self.current_user.id):
-                print("Selected jobs updated to 'Job Assessed'.")
+            job_identifiers = [int(x.strip()) for x in request_ids.split(",") if x.strip().isdigit()]
+            if Job.update_status_for_technician(job_identifiers, self.active_user.id):
+                print("Status of selected service requests updated to 'Assessed'.")
         except ValueError:
-            print("Invalid input. Enter numeric Job IDs separated by commas.")
+            print("Invalid input. Please enter numeric Request IDs separated by commas.")
 
-    def customer_menu(self):
+    def _customer_interactions(self):
         while True:
             try:
-                print("\n--- Customer Menu ---")
-                print("1. Book Equipment Repair")
-                print("2. Logout")
-                choice = input("Choose an option: ")
-                if choice == '1':
-                    self.book_equipment_repair()
-                elif choice == '2':
+                print("\n--- Customer Portal ---")
+                customer_options = {
+                    "1": "Submit Equipment for Repair",
+                    "2": "Logout from Customer Portal"
+                }
+                for key, value in customer_options.items():
+                    print(f"{key}. {value}")
+                customer_choice = input("Select an option: ")
+                if customer_choice == '1':
+                    self._submit_equipment_for_repair()
+                elif customer_choice == '2':
                     break
                 else:
-                    print("Invalid choice")
+                    print("Invalid choice.")
             except KeyboardInterrupt:
-                print("\n[!] Returning to customer menu.")
+                print("\n[!] Returning to customer portal.")
                 break
 
-    def book_equipment_repair(self):
+    def _submit_equipment_for_repair(self):
         try:
-            equipment_type = input("Enter equipment type: ")
-            serial = input("Enter serial number: ")
-            customer_id = self.current_user.get_id()
-            equipment = Equipment(customer_id, equipment_type, serial)
-            equipment.save(customer_id, equipment_type, serial)
-            print("Equipment registered for repair.")
+            device_type = input("Enter equipment type: ")
+            device_serial = input("Enter serial number: ")
+            customer_identifier = self.active_user.get_id()
+            equipment_record = Equipment(customer_identifier, device_type, device_serial)
+            equipment_record.save(customer_identifier, device_type, device_serial)
+            print("Equipment details submitted for repair.")
         except Exception as e:
-            print(f"Error while booking equipment: {e}")
+            print(f"Error submitting equipment for repair: {e}")
 
-
-    def view_assessed_jobs_and_add_cost(self):
+    def _review_completed_requests_add_cost(self):
         try:
-            assessed_jobs = Job.get_assessed_jobs()
-            if not assessed_jobs:
-                print("No assessed jobs found.")
+            completed_jobs = Job.get_assessed_jobs()
+            if not completed_jobs:
+                print("No assessed service requests found.")
                 return
 
-            print("\n--- Assessed Jobs ---")
-            for job in assessed_jobs:
-                print(f"Job ID: {job[0]}, Equipment ID: {job[1]}, Technician ID: {job[2]}, Description: {job[3]}, Status: {job[4]}, Cost: {job[5] if len(job) > 5 else 'N/A'}")
+            print("\n--- Assessed Service Requests ---")
+            for job_details in completed_jobs:
+                cost_info = f", Final Cost: {job_details[5]}" if len(job_details) > 5 else ", Cost: Not Yet Added"
+                print(f"Request ID: {job_details[0]}, Equipment ID: {job_details[1]}, Technician ID: {job_details[2]}, Issue: {job_details[3]}, Status: {job_details[4]}{cost_info}")
 
-            job_id = input("Enter Job ID to add cost (or press Enter to skip): ").strip()
-            if job_id:
-                cost = input("Enter cost amount: ").strip()
-                Job.update_cost(int(job_id), float(cost))
-                print("Cost updated.")
+            selected_job_id = input("Enter Request ID to add final cost (or press Enter to skip): ").strip()
+            if selected_job_id:
+                final_cost = input("Enter the final cost amount: ").strip()
+                Job.update_cost(int(selected_job_id), float(final_cost))
+                print("Final cost updated for the selected request.")
         except Exception as e:
-            print(f"[!] Error: {e}")
+            print(f"[!] Error processing assessed jobs: {e}")
 
-    def run_tests(self):
-            """Discovers and runs tests in the 'tests' directory."""
-            print("\n--- Running Unit Tests ---")
-            # Define the directory where tests are located
-            # Assumes 'tests' directory is in the same parent directory as this script
-            # Adjust the path if your structure is different
-            test_dir = os.path.join(os.path.dirname(__file__), '..', 'tests')
-            if not os.path.isdir(test_dir):
-                # Fallback: Assume 'tests' is a direct subdirectory
-                test_dir = os.path.join(os.path.dirname(__file__), 'tests')
+    def _run_module_tests(self):
+        """Locates and executes unit tests within the 'tests' directory."""
+        print("\n--- Executing Unit Tests ---")
+        tests_directory = os.path.join(os.path.dirname(__file__), '..', 'tests')
+        if not os.path.isdir(tests_directory):
+            tests_directory = os.path.join(os.path.dirname(__file__), 'tests')
 
-            if not os.path.isdir(test_dir):
-                print(f"Error: Test directory not found at expected locations.")
-                print(f"Looked in: {os.path.join(os.path.dirname(__file__), '..', 'tests')} and {os.path.join(os.path.dirname(__file__), 'tests')}")
-                return
+        if not os.path.isdir(tests_directory):
+            print(f"Error: Test directory not found at expected paths.")
+            print(f"Searched in: {os.path.join(os.path.dirname(__file__), '..', 'tests')} and {os.path.join(os.path.dirname(__file__), 'tests')}")
+            return
 
-            print(f"Discovering tests in: {test_dir}")
-            # Discover tests
-            loader = unittest.TestLoader()
-            suite = loader.discover(test_dir, pattern='test_*.py') # Standard pattern for test files
+        print(f"Discovering test modules in: {tests_directory}")
+        test_loader = unittest.TestLoader()
+        test_suite = test_loader.discover(tests_directory, pattern='test_*.py')
 
-            if suite.countTestCases() == 0:
-                print("No tests found.")
-                return
+        if test_suite.countTestCases() == 0:
+            print("No test cases found.")
+            return
 
-            # Run the tests
-            runner = unittest.TextTestRunner(verbosity=2) # verbosity=2 provides more detailed output
-            result = runner.run(suite)
+        test_runner = unittest.TextTestRunner(verbosity=2)
+        test_results = test_runner.run(test_suite)
 
-            print("--- Test Run Complete ---")
-            # Optional: Print summary or handle results further
-            if result.wasSuccessful():
-                print("All tests passed successfully!")
-            else:
-                print("Some tests failed.")
-            input("Press Enter to return to the main menu...") # Pause to see results
+        print("--- Test Execution Completed ---")
+        if test_results.wasSuccessful():
+            print("All test cases passed successfully!")
+        else:
+            print("Some test cases failed.")
+        input("Press Enter to return to the main application...")
 
+if __name__ == "__main__":
+    app = ServiceHub()
+    app.initiate_session()
