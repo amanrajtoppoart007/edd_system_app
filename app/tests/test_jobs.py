@@ -1,10 +1,10 @@
 # tests/test_jobs.py
 import unittest
-from models.job import Job
-from models.customer import Customer
-from models.technician import Technician
-from models.equipment import Equipment
-from utils.utils import Utils
+from app.models.job import Job
+from app.models.customer import Customer
+from app.models.technician import Technician
+from app.models.equipment import Equipment
+from app.utils.utils import Utils
 
 class TestJob(unittest.TestCase):
     def test_job_creation(self):

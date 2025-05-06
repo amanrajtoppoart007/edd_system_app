@@ -5,7 +5,7 @@ class DB:
 
     def __init__(self):
         if DB.connection is None:
-            DB.connection = sqlite3.connect("edd_system.db")
+            DB.connection = sqlite3.connect("edd_system_app.db")
             self.db_migration()
 
     def db_migration(self):

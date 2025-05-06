@@ -1,6 +1,6 @@
 # tests/test_supplier.py
 import unittest
-from models.supplier import Supplier
+from app.models.supplier import Supplier
 
 class TestJob(unittest.TestCase):
     def test_supplier_creation(self):

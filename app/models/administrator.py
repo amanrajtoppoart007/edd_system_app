@@ -1,7 +1,7 @@
-from models.user import User
-from models.roles import Roles
-from models.customer import Customer
-from models.equipment import Equipment
+from app.models.user import User
+from app.models.roles import Roles
+from app.models.customer import Customer
+from app.models.equipment import Equipment
 
 class Administrator(User):
     def __init__(self, name):

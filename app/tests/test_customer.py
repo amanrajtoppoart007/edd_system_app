@@ -1,7 +1,7 @@
 # tests/test_customer.py
 import unittest
-from models.customer import Customer
-from utils.utils import Utils
+from app.models.customer import Customer
+from app.utils.utils import Utils
 
 class TestJob(unittest.TestCase):
     def test_customer_creation(self):

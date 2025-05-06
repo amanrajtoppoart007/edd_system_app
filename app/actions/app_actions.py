@@ -1,13 +1,13 @@
 import sys
 import unittest
 import os
-from models.customer import Customer
-from models.equipment import Equipment
-from models.job import Job
-from models.administrator import Administrator
-from models.technician import Technician
+from app.models.customer import Customer
+from app.models.equipment import Equipment
+from app.models.job import Job
+from app.models.administrator import Administrator
+from app.models.technician import Technician
 from app.db.db import DB
-from models.supplier import Supplier
+from app.models.supplier import Supplier
 
 class AppAction:
     def __init__(self):
