@@ -1,4 +1,4 @@
-from app.database.db import Database
+from app.database.db import DB
 
 class Job:
     def __init__(self, description, status="Job Created", technician_id=None,equipment_id=None, id=None):
@@ -9,7 +9,7 @@ class Job:
         self.id = id
 
     def save(self):
-        db = Database().get_connection()
+        db = DB().get_connection()
         cursor = db.cursor()
         cursor.execute(
             "INSERT INTO jobs (description, status, technician_id,equipment_id) VALUES (?, ?, ? ,?)",
@@ -21,14 +21,14 @@ class Job:
 
     @staticmethod
     def get_all():
-        db = Database().get_connection()
+        db = DB().get_connection()
         cursor = db.cursor()
         cursor.execute("SELECT jobs.* , customers.name  FROM jobs  JOIN equipment ON jobs.equipment_id = equipment.id JOIN customers ON customers.id = equipment.customer_id")
         return cursor.fetchall()
 
     @staticmethod
     def get_by_technician(technician_id):
-        db = Database().get_connection()
+        db = DB().get_connection()
         cursor = db.cursor()
         cursor.execute('''
             SELECT jobs.id, jobs.description, jobs.status, equipment.type, equipment.serial_number
@@ -40,7 +40,7 @@ class Job:
     
     @staticmethod
     def update_status_for_technician(job_ids, technician_id, status="Job Assessed"):
-        db = Database().get_connection()
+        db = DB().get_connection()
         cursor = db.cursor()
         try:
             for job_id in job_ids:
@@ -56,14 +56,14 @@ class Job:
         
     @staticmethod
     def get_assessed_jobs():
-        db = Database().get_connection()
+        db = DB().get_connection()
         cursor = db.cursor()
         cursor.execute("SELECT * FROM jobs WHERE status = 'Job Assessed'")
         return cursor.fetchall()
 
     @staticmethod
     def update_cost(job_id, cost):
-        db = Database().get_connection()
+        db = DB().get_connection()
         cursor = db.cursor()
         cursor.execute("UPDATE jobs SET job_cost = ? , status = ?  WHERE id = ?", (cost,'Job Completed', job_id))
         db.commit()        

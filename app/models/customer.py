@@ -1,4 +1,4 @@
-from app.database.db import Database
+from app.database.db import DB
 
 class Customer:
     def __init__(self, name, email, id=None):
@@ -7,7 +7,7 @@ class Customer:
         self.id = id
 
     def save(self):
-        db = Database().get_connection()
+        db = DB().get_connection()
         cursor = db.cursor()
         cursor.execute("INSERT INTO customers (name, email) VALUES (?, ?)", (self.name, self.email))
         db.commit()
@@ -16,14 +16,14 @@ class Customer:
     
     @staticmethod
     def get_all():
-        db = Database().get_connection()
+        db = DB().get_connection()
         cursor = db.cursor()
         cursor.execute("SELECT * FROM customers")
         return cursor.fetchall()
 
     @staticmethod
     def find_by_email(email):
-        db = Database().get_connection()
+        db = DB().get_connection()
         cursor = db.cursor()
         cursor.execute("SELECT id, name, email FROM customers WHERE email = ?", (email,))
         row = cursor.fetchone()

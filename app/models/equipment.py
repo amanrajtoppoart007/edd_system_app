@@ -1,4 +1,4 @@
-from app.database.db import Database
+from app.database.db import DB
 
 class Equipment:
     def __init__(self, customer_id, type, serial_number, id=None):
@@ -8,7 +8,7 @@ class Equipment:
         self.id = id
 
     def save(self):
-        db = Database().get_connection()
+        db = DB().get_connection()
         cursor = db.cursor()
         cursor.execute(
             "INSERT INTO equipment (customer_id, type, serial_number) VALUES (?, ?, ?)",
@@ -20,7 +20,7 @@ class Equipment:
 
     @staticmethod
     def get_by_customer(customer_id):
-        db = Database().get_connection()
+        db = DB().get_connection()
         cursor = db.cursor()
         cursor.execute(
             "SELECT id, type, serial_number FROM equipment WHERE customer_id = ?",
