@@ -62,5 +62,5 @@ class DB:
 
         DB.connection.commit()
 
-    def getconnection(self):
+    def get_connection(self):
         return DB.connection

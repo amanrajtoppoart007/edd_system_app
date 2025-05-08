@@ -314,5 +314,5 @@ class AppAction:
         input("Press Enter to return to the main application...")
 
 if __name__ == "__main__":
-    app = ServiceHub()
-    app.initiate_session()
+    app = AppAction()
+    app.start()
