@@ -28,7 +28,7 @@ class Technician:
         return cursor.fetchall()
     
     
-    
+
     @staticmethod
     def find_by_email(email):
         db = DB().get_connection()

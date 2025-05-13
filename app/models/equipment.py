@@ -1,7 +1,7 @@
 from app.db.db import DB
 
 class Equipment:
-    def __init__(self, customer_id, type, serial_number, id=None):
+    def __init__(self, customer_id, type=None, serial_number=None, id=None):
         self.customer_id = customer_id
         self.type = type
         self.serial_number = serial_number

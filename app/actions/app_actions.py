@@ -336,13 +336,13 @@ class AppAction:
 
     def _technician_actions(self):
         """Handles operations available to a logged-in technician."""
-        if not self.active_user or not hasattr(self.active_user, 'email_address'): # Verifies active user is a technician.
+        if not self.active_user or not hasattr(self.active_user, 'email'): # Verifies active user is a technician.
             print("[ERROR] No technician logged in or invalid session. Returning to main menu.")
             return
 
         while True:
             try:
-                print(f"\n--- Technician Interface (Logged in as: {self.active_user.email_address}) ---")
+                print(f"\n--- Technician Interface (Logged in as: {self.active_user.email}) ---")
                 tech_options = {
                     "1": "View My Assigned Service Requests",
                     "2": "Update Status of Service Request",
@@ -496,7 +496,7 @@ class AppAction:
 
             customer_identifier = self.active_user.get_id()
             # Equipment object is instantiated with customer ID and device details.
-            equipment_record = Equipment(customer_id=customer_identifier, equipment_type=device_type, serial_number=device_serial)
+            equipment_record = Equipment(customer_id=customer_identifier, type=device_type, serial_number=device_serial)
             equipment_id = equipment_record.save() # Equipment model's save method.
 
             if equipment_id: 
